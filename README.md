@@ -46,6 +46,8 @@ The generator selects a connected maze near each stage's target route length. Ba
 
 Gentle has smaller boards and no holes. Balanced starts with a hazard-free board. Tough introduces route hazards immediately, with more on later boards. Its internal setting key remains `intricate` for compatibility with existing preferences.
 
+The board toolbar always shows the current journey's difficulty and board number. Completing eight boards offers the next difficulty: Gentle → Balanced → Tough. Finishing Tough offers a fresh Tough journey. Progression and best times use the difficulty actually played, independently of marble speed or settings selected during a run. Difficulty changes in Settings apply when starting a new journey; speed and sensitivity apply immediately.
+
 Boards four through eight have a midpoint checkpoint. Roll over the gold diamond to activate it; it turns green and shows SAVED. A fall returns you to that checkpoint, or to the start if none is active. Retries keep the same maze. Pauses, background tabs, and results stop the timer. Restarting a board keeps journey time and falls.
 
 Three stars require no falls and a finish within the board's target time. Two stars allow up to two falls; one star recognises completion. There is no countdown that blocks progress. Settings and best times are saved locally per maze difficulty; different random boards and speed settings affect times.

@@ -11,13 +11,13 @@ class Element {
   showModal() { this.open = true; } close() { this.open = false; }
 }
 
-function gameHarness() {
+function gameHarness(difficulty = 'balanced', speed = 185) {
   const elements = new Map(), storage = new Map();
   const get = id => { if (!elements.has(id)) elements.set(id, new Element()); return elements.get(id); };
   globalThis.document = { getElementById: get, querySelector: get, body: new Element(), createElement: () => new Element(), createTextNode: text => text };
   globalThis.localStorage = { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) };
   const game = Object.create(Game.prototype);
-  Object.assign(game, { settings: { speed: 185, sensitivity: 1, difficulty: 'balanced', sound: false }, state: 'welcome', seed: 101, ball: {}, track: Array.from({ length: 8 }, () => new Element()), renderer: { setBoard() {} }, clearInput() {}, requestWakeLock() {}, releaseWakeLock() {}, newSeed: () => 12498, tiltEnabled: false });
+  Object.assign(game, { settings: { speed, sensitivity: 1, difficulty, sound: false }, state: 'welcome', seed: 101, ball: {}, track: Array.from({ length: 8 }, () => new Element()), renderer: { setBoard() {} }, clearInput() {}, requestWakeLock() {}, releaseWakeLock() {}, newSeed: () => 12498, tiltEnabled: false });
   game.startJourney();
   return { game, get, storage };
 }
@@ -64,6 +64,42 @@ test('pause and resume preserve progress and the maze', () => {
 
 test('clock includes complete minutes', () => {
   assert.equal(formatTime(0), '0:00'); assert.equal(formatTime(65.9), '1:05'); assert.equal(formatTime(609), '10:09');
+});
+
+test('completion advances the actual difficulty at every speed, with Tough replaying Tough', async () => {
+  setDevice({ touch: false });
+  const levels = ['gentle', 'balanced', 'intricate'], names = ['Gentle', 'Balanced', 'Tough'];
+  for (const speed of [135, 185, 235]) for (const [level, difficulty] of levels.entries()) {
+    const { game, get, storage } = gameHarness(difficulty, speed);
+    // A pending preference must not relabel this run or determine its next level.
+    game.settings.difficulty = levels[(level + 2) % levels.length];
+    game.syncSettings();
+    assert.match(get('difficulty-note').textContent, new RegExp(`Current journey: ${names[level]}`));
+    for (let board = 0; board < 8; board++) {
+      assert.equal(game.board.difficulty, difficulty);
+      assert.equal(get('board-label').textContent, `${names[level]} · ${String(board + 1).padStart(2, '0')} / 08`);
+      game.elapsed += 30; game.levelElapsed = 30;
+      game.enterPocket('finish', performance.now()); game.resolvePocket();
+      if (board < 7) {
+        assert.equal(get('overlay-action').textContent, `Next board ${String(board + 2).padStart(2, '0')} →`);
+        get('overlay-action').onclick();
+      }
+    }
+    assert.equal(game.state, 'complete');
+    assert.equal(storage.get(`labyrinth.best.${difficulty}`), '240');
+    assert.match(get('overlay-message').textContent, new RegExp(`${names[level]} journey complete`));
+    const nextLevel = Math.min(level + 1, levels.length - 1);
+    assert.equal(get('overlay-action').textContent, level === 2 ? 'Play Tough again ↗' : `Next level: ${names[nextLevel]} →`);
+    if (level === 2) {
+      assert.match(get('overlay-message').textContent, /hardest level/);
+      assert.doesNotMatch(get('overlay-message').textContent, /Next level: Balanced/);
+    }
+    await get('overlay-action').onclick();
+    assert.equal(game.state, 'playing'); assert.equal(game.stageIndex, 0);
+    assert.equal(game.runDifficulty, levels[nextLevel]); assert.equal(game.board.difficulty, levels[nextLevel]);
+    assert.equal(game.settings.speed, speed); assert.equal(game.elapsed, 0);
+    assert.equal(JSON.parse(storage.get('labyrinth.settings')).difficulty, levels[nextLevel]);
+  }
 });
 
 function setDevice({ touch = true, secure = true, requestPermission, coarse = touch } = {}) {

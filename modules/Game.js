@@ -10,6 +10,7 @@ export function formatTime(seconds) {
 }
 const DIRECTIONS = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right' };
 const DEFAULTS = { difficulty: 'balanced', speed: 185, sensitivity: 1, sound: false };
+const DIFFICULTIES = ['gentle', 'balanced', 'intricate'];
 const difficultyName = value => ({ gentle: 'Gentle', balanced: 'Balanced', intricate: 'Tough' })[value];
 function readSettings() {
   try {
@@ -82,6 +83,7 @@ export class Game {
     $('maze-difficulty').addEventListener('change', e => {
       this.settings.difficulty = e.target.value; this.saveSettings(); this.showBest();
       if (this.state === 'welcome') { this.runDifficulty = this.settings.difficulty; this.loadBoard(0); }
+      this.syncSettings();
     });
     $('speed-setting').addEventListener('change', e => { this.settings.speed = Number(e.target.value); this.saveSettings(); });
     $('sensitivity').addEventListener('input', e => {
@@ -139,7 +141,7 @@ export class Game {
     $('maze-difficulty').value = this.settings.difficulty; $('speed-setting').value = String(this.settings.speed);
     $('sensitivity').value = this.settings.sensitivity; $('sensitivity-value').textContent = `${this.settings.sensitivity.toFixed(1)}×`;
     $('sound-setting').checked = this.settings.sound;
-    $('difficulty-note').textContent = this.state === 'welcome' ? 'Choose the feel of your eight-board journey.' : `Current journey: ${difficultyName(this.runDifficulty)}. Changes apply to your next journey.`;
+    $('difficulty-note').textContent = this.state === 'welcome' ? 'Choose the feel of your eight-board journey.' : `Current journey: ${difficultyName(this.runDifficulty)}. Selected for a new journey: ${difficultyName(this.settings.difficulty)}. Speed and sensitivity apply now.`;
   }
 
   async beginJourney() {
@@ -178,7 +180,7 @@ export class Game {
     this.respawn = this.board.start; this.levelElapsed = 0; this.levelFalls = 0; this.hintUntil = 0;
     resetMarble(this.ball, this.board.start); this.animation = null;
     const number = String(index + 1).padStart(2, '0'), stage = STAGES[index];
-    $('board-label').textContent = `BOARD ${number} / 08`; $('stage-number').textContent = number;
+    $('board-label').textContent = `${difficultyName(this.runDifficulty)} · ${number} / 08`; $('stage-number').textContent = number;
     $('stage-name').textContent = stage.name; $('stage-description').textContent = stage.description;
     $('board-caption').textContent = stage.name + ' / ' + difficultyName(this.runDifficulty);
     document.querySelector('.engraving').textContent = `L / ${number}`;
@@ -296,12 +298,20 @@ export class Game {
         const key = `labyrinth.best.${this.runDifficulty}`, best = Number(localStorage.getItem(key));
         if (!best || this.elapsed < best) { localStorage.setItem(key, String(this.elapsed)); personalBest = true; }
       } catch { /* A completed run still works without storage. */ }
-      this.showOverlay(personalBest ? 'A NEW PERSONAL BEST' : 'EIGHT BOARDS. ONE LITTLE ESCAPE.', 'You found your balance.', `All eight labyrinths, beautifully navigated. ${difficultyName(this.runDifficulty)} journey complete.`, 'A new journey ↗', () => this.beginJourney(), 'Back to the beginning', () => this.home(), '✳');
+      const nextDifficulty = DIFFICULTIES[DIFFICULTIES.indexOf(this.runDifficulty) + 1];
+      const nextName = difficultyName(nextDifficulty);
+      const message = `All eight labyrinths, beautifully navigated. ${difficultyName(this.runDifficulty)} journey complete. ` + (nextDifficulty ? `Next level: ${nextName}.` : 'You have completed the hardest level. Another Tough journey awaits.');
+      this.showOverlay(personalBest ? 'A NEW PERSONAL BEST' : 'EIGHT BOARDS. ONE LITTLE ESCAPE.', 'You found your balance.', message, nextDifficulty ? `Next level: ${nextName} →` : 'Play Tough again ↗', () => {
+        // Advance from the completed run, never from a pending settings choice.
+        this.settings.difficulty = nextDifficulty || this.runDifficulty;
+        this.saveSettings();
+        return this.beginJourney();
+      }, 'Back to the beginning', () => this.home(), '✳');
       $('result-stats').textContent = `${formatTime(this.elapsed)} · ${this.falls} ${this.falls === 1 ? 'fall' : 'falls'} · ${this.stars} / 24 stars`;
-      this.status('Journey complete. A new set of mazes is ready when you are.');
+      this.status(nextDifficulty ? `${difficultyName(this.runDifficulty)} complete. ${nextName} is next.` : 'Tough complete. You have completed the hardest level.');
     } else {
       this.state = 'board-complete';
-      this.showOverlay('BEAUTIFULLY NAVIGATED', 'A turn well taken.', `Board ${this.stageIndex + 1} complete. Up next: ${STAGES[this.stageIndex + 1].name}.`, 'Next board →', () => { this.loadBoard(this.stageIndex + 1); this.resume(); this.status(STAGES[this.stageIndex].description); });
+      this.showOverlay('BEAUTIFULLY NAVIGATED', 'A turn well taken.', `${difficultyName(this.runDifficulty)} · Board ${this.stageIndex + 1} of 8 complete. Up next: ${STAGES[this.stageIndex + 1].name}.`, `Next board ${String(this.stageIndex + 2).padStart(2, '0')} →`, () => { this.loadBoard(this.stageIndex + 1); this.resume(); this.status(STAGES[this.stageIndex].description); });
       const stars = document.createElement('div'); stars.className = 'stars'; stars.setAttribute('aria-label', `${earned} of 3 stars`);
       stars.textContent = '★'.repeat(earned); const empty = document.createElement('span'); empty.textContent = '☆'.repeat(3 - earned); stars.append(empty);
       $('result-stats').append(stars, document.createTextNode(`${formatTime(this.levelElapsed)} · ${this.levelFalls} falls`));
