@@ -1,0 +1,11 @@
+{
+  "name": "pwa-labyrinth",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "An offline marble labyrinth with eight procedurally generated boards.",
+  "scripts": {
+    "test": "node --test",
+    "dev": "node scripts/serve.mjs"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Labyrinth — A little escape",
+  "short_name": "Labyrinth",
+  "description": "Eight freshly generated marble mazes. A small escape, with tilt, touch, or keyboard controls.",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f1e9",
+  "theme_color": "#eee9df",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    { "src": "icons/marble192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/marble512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/marble.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

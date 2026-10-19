@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eee9df">
+  <meta name="description" content="A small escape. Guide a marble through eight freshly made labyrinths. Play with tilt, touch, or your keyboard, even offline.">
+  <title>Labyrinth — A little escape</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/marble.svg">
+  <link rel="apple-touch-icon" href="icons/marble192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="./" aria-label="Labyrinth home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M13 4H4v24h24V4h-9v16h-7v-9H4M28 12h-9M20 28v-8"/><circle cx="12" cy="20" r="2"/></svg><span>labyrinth<span class="brand-dot">.</span></span></a>
+    <div class="masthead-right"><span class="edition">THE MARBLE COLLECTION / 01</span><button id="install-btn" class="text-button" hidden>Install app ↗</button><button id="settings-btn" class="icon-button" aria-label="Open settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="16" cy="17" r="3"/></svg></button></div>
+  </header>
+  <main class="layout">
+    <aside class="sidebar">
+      <div><p class="eyebrow"><span class="small-line"></span> FIND YOUR BALANCE</p><h1>A little tilt.<br>A little <em>escape.</em></h1><p class="intro">A marble. A maze. A moment to yourself.</p></div>
+      <section id="welcome-panel" aria-label="Start your journey">
+        <p class="body-copy">Roll through eight marble labyrinths, freshly generated every journey. Take the turns. Mind the holes. Enjoy getting there.</p>
+        <div class="journey-meta"><span>8 boards</span><span>about 5–10 min</span><span>No rush</span></div>
+        <button id="start-btn" class="primary-button">Begin the journey <span aria-hidden="true">↗</span></button><p class="quiet">On a phone or tablet, tap Begin to enable tilt. Hold it comfortably and allow motion access if asked.</p><p id="best-display" class="quiet">A fresh path, every time.</p>
+      </section>
+      <section id="playing-panel" aria-label="Journey details" hidden>
+        <div class="current-board"><span id="stage-number" class="board-number">01</span><div><p class="eyebrow">YOUR CURRENT BOARD</p><h2 id="stage-name">First light</h2></div></div>
+        <p id="stage-description" class="body-copy">Get a feel for the marble. The green pocket is your destination.</p>
+        <div class="stats"><div><span class="stat-label">JOURNEY TIME</span><strong id="time-display">0:00</strong></div><div><span class="stat-label">FALLS</span><strong id="falls-display">0</strong></div></div><p class="quiet">Every turn counts. Every retry is welcome.</p>
+      </section>
+      <div class="how-to"><p class="eyebrow">A LIGHT TOUCH GOES A LONG WAY</p><p id="control-description"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> or WASD to roll</p><p class="quiet">On your phone? Tilt is set up when you begin. The thumb pad works too.</p><div class="legend"><span><i class="legend-finish"></i>Finish</span><span><i class="legend-hole"></i>Avoid</span><span><i class="legend-checkpoint"></i>Checkpoint</span></div></div>
+    </aside>
+    <section class="play-area" aria-label="Marble labyrinth game">
+      <div class="board-toolbar"><div><span class="live-dot"></span><span id="board-label">BOARD 01 / 08</span></div><div class="board-actions"><button id="hint-btn" class="text-button" disabled>Show path <span class="quiet">+5s</span></button><button id="restart-btn" class="icon-button" aria-label="Restart this board" disabled>↺</button><button id="pause-btn" class="icon-button" aria-label="Pause game" disabled>Ⅱ</button></div></div>
+      <div id="board-frame" class="board-frame">
+        <canvas id="board" tabindex="0" role="img" aria-label="Generated marble maze. Use arrow keys, WASD, the thumb pad, or tilt to reach the green finish pocket."></canvas>
+        <div id="board-cover" class="board-cover"><span class="preview-tag">YOUR FIRST LITTLE ESCAPE</span></div>
+      </div>
+      <div class="below-board"><ol id="journey-track" class="journey-track" aria-label="Eight board journey"></ol><div class="board-caption"><span id="board-caption">One marble. Endless possibilities.</span><span class="engraving">L / 01</span></div></div>
+      <div class="control-strip"><p id="status" role="status" aria-live="polite">Your next five minutes, a little quieter.</p><div id="thumb-pad" class="thumb-pad" role="group" aria-label="Touch direction pad"><button data-direction="up" aria-label="Roll up">↑</button><button data-direction="left" aria-label="Roll left">←</button><span aria-hidden="true">●</span><button data-direction="right" aria-label="Roll right">→</button><button data-direction="down" aria-label="Roll down">↓</button></div></div>
+    </section>
+  </main>
+  <footer class="page-footer"><span>A CLASSIC PASTIME, REIMAGINED.</span><span>Made for a moment of play <span aria-hidden="true">✳</span></span></footer>
+  <dialog id="game-overlay" class="game-overlay" aria-labelledby="overlay-title" aria-describedby="overlay-message" hidden>
+    <div class="result-content"><div class="result-symbol" id="result-symbol" aria-hidden="true">✓</div><p id="overlay-eyebrow" class="eyebrow">BEAUTIFULLY NAVIGATED</p><h2 id="overlay-title">Board complete.</h2><p id="overlay-message">A little closer to finding your balance.</p><div id="result-stats" class="result-stats"></div></div>
+    <div class="result-actions"><button id="overlay-action" class="primary-button">Next board →</button><button id="overlay-secondary" class="text-button" hidden>Return to the beginning</button></div>
+  </dialog>
+  <dialog id="settings-dialog" aria-labelledby="settings-title"><form method="dialog">
+    <div class="dialog-heading"><p class="eyebrow">MAKE YOURSELF COMFORTABLE</p><button class="icon-button" aria-label="Close settings">×</button></div><h2 id="settings-title">Find your feel.</h2>
+    <label for="maze-difficulty">Maze difficulty</label><select id="maze-difficulty"><option value="gentle">Gentle — fewer turns, no holes</option><option value="balanced">Balanced — a few holes along the way</option><option value="intricate">Tough — more holes to steer around</option></select><p class="field-note" id="difficulty-note">Applied when you begin a new journey.</p>
+    <label for="speed-setting">Marble speed</label><select id="speed-setting"><option value="135">Unhurried</option><option value="185">Balanced</option><option value="235">Lively</option></select>
+    <label for="sensitivity">Tilt sensitivity <output id="sensitivity-value" for="sensitivity">1.0×</output></label><input id="sensitivity" type="range" min="0.5" max="1.8" step="0.1" value="1">
+    <button id="tilt-btn" type="button" class="secondary-button">Enable tilt controls</button><button id="calibrate-btn" type="button" class="text-button" hidden>Calibrate to this position</button><p id="sensor-status" class="field-note" role="status">Keyboard and touch controls are always available.</p>
+    <label class="checkbox-label"><input id="sound-setting" type="checkbox"> Gentle sound effects</label><button class="primary-button">Back to the board <span aria-hidden="true">→</span></button>
+  </form></dialog>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

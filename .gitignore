@@ -1,0 +1,22 @@
+# Generated releases and local visual checks
+artifacts/
+START-HERE.txt
+
+# Dependencies, local settings, and credentials
+node_modules/
+.vscode/
+.idea/
+.codex/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+Desktop.ini
+__pycache__/
+
+# Unused artwork from the original template
+icons/icon*.png
+icons/splash*.png
+icons/wide.png
