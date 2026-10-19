@@ -74,6 +74,11 @@ export class Game {
       if (this.tiltEnabled) this.calibrate();
       this.status(this.state === 'paused' ? 'Settings saved. Resume when you are ready.' : 'Settings saved.');
     });
+    $('about-btn').addEventListener('click', () => {
+      $('about-dialog').showModal();
+      $('about-content').scrollTop = 0;
+    });
+    $('about-close-btn').addEventListener('click', () => $('about-dialog').close());
     $('maze-difficulty').addEventListener('change', e => {
       this.settings.difficulty = e.target.value; this.saveSettings(); this.showBest();
       if (this.state === 'welcome') { this.runDifficulty = this.settings.difficulty; this.loadBoard(0); }
@@ -91,7 +96,7 @@ export class Game {
     });
 
     window.addEventListener('keydown', e => {
-      if ($('settings-dialog').open || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
+      if ($('settings-dialog').open || $('about-dialog').open || /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
       if (DIRECTIONS[e.code] && this.state === 'playing') { e.preventDefault(); this.keys.add(e.code); }
       if ((e.code === 'Escape' || e.code === 'KeyP') && !e.repeat) {
         e.preventDefault();

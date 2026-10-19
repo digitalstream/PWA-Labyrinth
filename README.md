@@ -12,6 +12,7 @@ A mobile-first marble maze with tilt controls, eight procedurally generated boar
 - Holes along the route with checked clearance to steer past them; hints show the gaps.
 - Gold checkpoints that turn green when saved, unlimited retries, and saved personal bests.
 - Installable PWA with offline caching and locally bundled assets.
+- An About panel in Settings, with a technical overview and project links.
 
 ## Run locally
 

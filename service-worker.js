@@ -1,4 +1,4 @@
-const CACHE = 'labyrinth-marble-v9';
+const CACHE = 'labyrinth-marble-v10';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './manifest.json',
   './modules/Game.js', './modules/MazeGenerator.js', './modules/Physics.js',

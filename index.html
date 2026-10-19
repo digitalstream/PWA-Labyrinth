@@ -52,8 +52,45 @@
     <label for="speed-setting">Marble speed</label><select id="speed-setting"><option value="135">Unhurried</option><option value="185">Balanced</option><option value="235">Lively</option></select>
     <label for="sensitivity">Tilt sensitivity <output id="sensitivity-value" for="sensitivity">1.0×</output></label><input id="sensitivity" type="range" min="0.5" max="1.8" step="0.1" value="1">
     <button id="tilt-btn" type="button" class="secondary-button">Enable tilt controls</button><button id="calibrate-btn" type="button" class="text-button" hidden>Calibrate to this position</button><p id="sensor-status" class="field-note" role="status">Keyboard and touch controls are always available.</p>
-    <label class="checkbox-label"><input id="sound-setting" type="checkbox"> Gentle sound effects</label><button class="primary-button">Back to the board <span aria-hidden="true">→</span></button>
+    <label class="checkbox-label"><input id="sound-setting" type="checkbox"> Gentle sound effects</label>
+    <button id="about-btn" type="button" class="text-button about-trigger">About Labyrinth <span aria-hidden="true">↗</span></button>
+    <button class="primary-button">Back to the board <span aria-hidden="true">→</span></button>
   </form></dialog>
+  <dialog id="about-dialog" class="about-dialog" aria-labelledby="about-title" aria-describedby="about-tagline">
+    <div id="about-content" class="about-content">
+      <header class="about-header">
+        <img src="icons/marble.svg" width="44" height="44" alt="">
+        <p class="eyebrow">BEHIND THE BOARD</p>
+        <h2 id="about-title">Labyrinth PWA</h2>
+        <p id="about-tagline" class="about-tagline">A classic marble maze, reimagined for a little moment of play.</p>
+      </header>
+      <section class="about-section" aria-labelledby="about-mazes">
+        <h3 id="about-mazes">A fresh path, every journey</h3>
+        <p>Eight boards are made with <strong>seeded maze generation</strong> and a route to the finish. Retries keep the same layout, so you can learn each turn. Route hazards are checked against the marble’s full width, leaving a gap to steer past. The path hint follows those gaps.</p>
+        <div class="about-badges" aria-label="Maze techniques"><span>Procedural generation</span><span>Seeded mazes</span><span>Route finding</span></div>
+      </section>
+      <section class="about-section" aria-labelledby="about-physics">
+        <h3 id="about-physics">A marble with momentum</h3>
+        <p>A <strong>custom physics loop</strong> handles acceleration, drag, speed limits, and collisions with the rails. The board is drawn with <strong>Canvas 2D</strong>, using light, shadows, and mineral veins to give it a tactile feel.</p>
+        <div class="about-badges" aria-label="Rendering and physics techniques"><span>Canvas 2D</span><span>Fixed timestep</span><span>Collision detection</span></div>
+      </section>
+      <section class="about-section" aria-labelledby="about-controls">
+        <h3 id="about-controls">Find your own balance</h3>
+        <p><strong>Tilt controls</strong> use your device’s orientation, with calibration, input smoothing, and screen-rotation handling. A touch direction pad and keyboard controls make the same journey playable on phones, tablets, and desktops. Marble speed and tilt sensitivity can be adjusted separately.</p>
+        <div class="about-badges" aria-label="Input techniques"><span>DeviceOrientation</span><span>Calibration</span><span>Touch &amp; keyboard</span></div>
+      </section>
+      <section class="about-section" aria-labelledby="about-offline">
+        <h3 id="about-offline">A small app that travels with you</h3>
+        <p>Built with <strong>native JavaScript and ES modules</strong>. A service worker caches the game for offline play after its first successful load. Your preferences and personal bests are saved on this device, while a screen wake lock helps keep the board awake during play where supported.</p>
+        <div class="about-badges" aria-label="App technologies"><span>ES modules</span><span>Progressive Web App</span><span>Offline caching</span><span>Local storage</span></div>
+      </section>
+      <div class="about-project">
+        <p>Created by <strong>Brent Abernethy</strong>.</p>
+        <div class="about-links"><a href="https://github.com/digitalstream/PWA-Labyrinth" target="_blank" rel="noopener noreferrer">View source on GitHub <span aria-hidden="true">↗</span></a><a href="https://github.com/digitalstream" target="_blank" rel="noopener noreferrer">More projects <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </div>
+    <div class="about-actions"><button id="about-close-btn" type="button" class="primary-button">Back to settings <span aria-hidden="true">→</span></button></div>
+  </dialog>
   <script type="module" src="app.js"></script>
 </body>
 </html>
