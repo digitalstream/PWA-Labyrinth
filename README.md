@@ -69,3 +69,7 @@ Increment the cache version in `service-worker.js` whenever cached runtime files
 ## Verification
 
 Automated checks cover maze connectivity, deterministic retries, wall collisions, finish and checkpoint flows, motion-permission fallbacks, and physical traversal around route hazards at every speed setting. Physical phones and tablets remain the place to judge tilt feel, installed-app behaviour, and session pacing.
+
+## Licence
+
+This project is licensed under the [MIT Licence](LICENSE). Third-party components retain their respective licences.
